@@ -17,10 +17,10 @@ fn main() {
             println!("Added employee {name} to {department} department\n");
         }
 
-        fn list_employees_from(&self, department: String) {
-            let company_department = self.departments.get(&department);
+        fn list_employees_from(&self, department: &str) {
+            let company_department = self.departments.get(department);
             match company_department {
-                Some(dep) => println!("{department} department:\n{:#?}\n", dep),
+                Some(dep) => println!("{department} department employees:\n{:#?}\n", dep),
                 None => println!("Invalid \"{department}\" department\n"),
             }
         }
@@ -36,15 +36,6 @@ fn main() {
             (String::from("Sales"), vec![]),
         ]),
     };
-    company.add_employee(String::from("Sally"), String::from("Engineering"));
-    company.add_employee(String::from("Bruno"), String::from("Engineering"));
-    company.add_employee(String::from("Amir"), String::from("Sales"));
-    company.add_employee(String::from("Pedro"), String::from("Sales"));
-    company.add_employee(String::from("Juan"), String::from("Sales"));
-    company.list_employees_from(String::from("Engineering"));
-    company.list_employees_from(String::from("Sales"));
-    company.list_employees_from(String::from("HR"));
-    company.list_employees();
     
     loop {
         let mut user_input = String::new();
@@ -57,17 +48,28 @@ fn main() {
         if command.to_lowercase().eq("add") { 
             let mut name = String::new();
             let mut department = String::new();
-            if let Some(employee_name) = split_user_input.nth(0) {
-                name.push_str(employee_name);
+            match split_user_input.nth(0) {
+                Some(employee_name) => name.push_str(employee_name),
+                None => {
+                    println!("Invalid add operation: unspecified employee name\n");
+                    continue;
+                }
             };
-            if let Some(employee_department) = split_user_input.nth(1) {
-                department.push_str(employee_department);
+            match split_user_input.nth(1) {
+                Some(employee_department) => department.push_str(employee_department),
+                None => {
+                    println!("Invalid add operation: unspecified employee department\n");
+                    continue;
+                }
             };
             company.add_employee(name, department);
             continue;
         }
         if command.to_lowercase().eq("list") {
-            println!("Handle list command\n");
+            match split_user_input.nth(0) {
+                Some(list_department) => company.list_employees_from(list_department),
+                None => company.list_employees()
+            }
             continue;
         }
         if command.to_lowercase().eq("quit") { break; }
