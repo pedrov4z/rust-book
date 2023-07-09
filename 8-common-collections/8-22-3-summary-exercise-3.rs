@@ -55,7 +55,15 @@ fn main() {
             None => continue
         };
         if command.to_lowercase().eq("add") { 
-            println!("Handle add command\n");
+            let mut name = String::new();
+            let mut department = String::new();
+            if let Some(employee_name) = split_user_input.nth(0) {
+                name.push_str(employee_name);
+            };
+            if let Some(employee_department) = split_user_input.nth(1) {
+                department.push_str(employee_department);
+            };
+            company.add_employee(name, department);
             continue;
         }
         if command.to_lowercase().eq("list") {
